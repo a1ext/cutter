@@ -81,7 +81,7 @@ private slots:
     void flagsChanged();
 
 private:
-    enum class Source { BIN, FLAGS };
+    enum class Source { BIN, FLAGS, ANAL };
 
     Source getSource();
 

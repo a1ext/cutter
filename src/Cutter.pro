@@ -287,7 +287,8 @@ HEADERS  += \
     dialogs/AttachProcDialog.h \
     widgets/RegisterRefsWidget.h \
     dialogs/SetToDataDialog.h \
-    utils/InitialOptions.h
+    utils/InitialOptions.h \
+    utils/Json.h
 
 FORMS    += \
     dialogs/AboutDialog.ui \

@@ -98,6 +98,11 @@
           <string>Flags (Editable)</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Anal (Editable)</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>

@@ -238,10 +238,13 @@ ClassesWidget::~ClassesWidget() {}
 
 ClassesWidget::Source ClassesWidget::getSource()
 {
-    if (ui->classSourceCombo->currentIndex() == 1) {
-        return Source::FLAGS;
-    } else {
+    switch (ui->classSourceCombo->currentIndex()) {
+    case 0:
         return Source::BIN;
+    case 1:
+        return Source::FLAGS;
+    default:
+        return Source::ANAL;
     }
 }
 
@@ -255,9 +258,17 @@ void ClassesWidget::flagsChanged()
 void ClassesWidget::refreshClasses()
 {
     model->beginReload();
-    classes = getSource() == Source::BIN
-              ? Core()->getAllClassesFromBin()
-              : Core()->getAllClassesFromFlags();
+    switch (getSource()) {
+    case Source::BIN:
+        classes = Core()->getAllClassesFromBin();
+        break;
+    case Source::FLAGS:
+        classes = Core()->getAllClassesFromFlags();
+        break;
+    case Source::ANAL:
+        classes = Core()->getAllClassesFromAnal();
+        break;
+    }
     model->endReload();
 
     qhelpers::adjustColumns(ui->classesTreeView, 3, 0);

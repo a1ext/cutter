@@ -243,20 +243,28 @@ struct DisassemblyLine {
     QString text;
 };
 
+struct ClassBaseClassDescription {
+    QString name;
+    RVA offset;
+};
+
 struct ClassMethodDescription {
     QString name;
-    RVA addr;
+    RVA addr = RVA_INVALID;
+    int vtableIndex = -1;
 };
 
 struct ClassFieldDescription {
     QString name;
-    RVA addr;
+    RVA addr = RVA_INVALID;
 };
 
 struct ClassDescription {
     QString name;
-    RVA addr;
-    ut64 index;
+    RVA addr = RVA_INVALID;
+    RVA vtableAddr = RVA_INVALID;
+    ut64 index = 0;
+    QList<ClassBaseClassDescription> baseClasses;
     QList<ClassMethodDescription> methods;
     QList<ClassFieldDescription> fields;
 };
@@ -579,6 +587,7 @@ public:
     QList<EntrypointDescription> getAllEntrypoint();
     QList<ClassDescription> getAllClassesFromBin();
     QList<ClassDescription> getAllClassesFromFlags();
+    QList<ClassDescription> getAllClassesFromAnal();
     QList<ResourcesDescription> getAllResources();
     QList<VTableDescription> getAllVTables();
     QList<TypeDescription> getAllTypes();
