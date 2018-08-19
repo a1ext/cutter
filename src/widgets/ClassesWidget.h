@@ -26,7 +26,7 @@ private:
     QList<ClassDescription> *classes;
 
 public:
-    enum Columns { NAME = 0, TYPE, OFFSET, COUNT };
+    enum Columns { NAME = 0, TYPE, OFFSET, VTABLE, COUNT };
     enum RowType { CLASS = 0, METHOD = 1, FIELD = 2 };
 
     static const int OffsetRole = Qt::UserRole;

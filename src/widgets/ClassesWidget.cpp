@@ -85,7 +85,9 @@ QVariant ClassesModel::data(const QModelIndex &index, int role) const
             case TYPE:
                 return tr("method");
             case OFFSET:
-                return RAddressString(meth->addr);
+                return meth->addr == RVA_INVALID ? QString() : RAddressString(meth->addr);
+            case VTABLE:
+                return meth->vtableIndex < 0 ? QString() : QString("+%1").arg(meth->vtableIndex);
             default:
                 return QVariant();
             }
@@ -107,7 +109,7 @@ QVariant ClassesModel::data(const QModelIndex &index, int role) const
             case TYPE:
                 return tr("field");
             case OFFSET:
-                return RAddressString(field->addr);
+                return field->addr == RVA_INVALID ? QString() : RAddressString(field->addr);
             default:
                 return QVariant();
             }
@@ -129,7 +131,9 @@ QVariant ClassesModel::data(const QModelIndex &index, int role) const
             case TYPE:
                 return tr("class");
             case OFFSET:
-                return RAddressString(cls->addr);
+                return cls->addr == RVA_INVALID ? QString() : RAddressString(cls->addr);
+            case VTABLE:
+                return cls->vtableAddr == RVA_INVALID ? QString() : RAddressString(cls->vtableAddr);
             default:
                 return QVariant();
             }
@@ -156,6 +160,8 @@ QVariant ClassesModel::headerData(int section, Qt::Orientation, int role) const
             return tr("Type");
         case OFFSET:
             return tr("Offset");
+        case VTABLE:
+            return tr("VTable");
         default:
             return QVariant();
         }
