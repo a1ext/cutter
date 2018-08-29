@@ -6,6 +6,8 @@
 #include "ui_ClassesWidget.h"
 #include "utils/Helpers.h"
 
+#include <QMenu>
+
 ClassesModel::ClassesModel(QList<ClassDescription> *classes, QObject *parent)
     : QAbstractItemModel(parent),
       classes(classes)
@@ -93,6 +95,8 @@ QVariant ClassesModel::data(const QModelIndex &index, int role) const
             }
         case OffsetRole:
             return QVariant::fromValue(meth->addr);
+        case VTableOffsetRole:
+            return QVariant::fromValue(index.parent().data(VTableOffsetRole).toULongLong() + meth->vtableIndex);
         case NameRole:
             return meth->name;
         case TypeRole:
@@ -139,6 +143,8 @@ QVariant ClassesModel::data(const QModelIndex &index, int role) const
             }
         case OffsetRole:
             return QVariant::fromValue(cls->addr);
+        case VTableOffsetRole:
+            return QVariant::fromValue(cls->vtableAddr);
         case NameRole:
             return cls->name;
         case TypeRole:
@@ -234,10 +240,12 @@ ClassesWidget::ClassesWidget(MainWindow *main, QAction *action) :
     proxy_model = new ClassesSortFilterProxyModel(model, this);
     ui->classesTreeView->setModel(proxy_model);
     ui->classesTreeView->sortByColumn(ClassesModel::TYPE, Qt::AscendingOrder);
+    ui->classesTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(Core(), SIGNAL(refreshAll()), this, SLOT(refreshClasses()));
     connect(Core(), SIGNAL(flagsChanged()), this, SLOT(flagsChanged()));
     connect(ui->classSourceCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(refreshClasses()));
+    connect(ui->classesTreeView, &QTreeView::customContextMenuRequested, this, &ClassesWidget::showContextMenu);
 }
 
 ClassesWidget::~ClassesWidget() {}
@@ -289,4 +297,22 @@ void ClassesWidget::on_classesTreeView_doubleClicked(const QModelIndex &index)
 
     RVA offset = index.data(ClassesModel::OffsetRole).value<RVA>();
     Core()->seek(offset);
+}
+
+void ClassesWidget::showContextMenu(const QPoint &pt)
+{
+    QMenu *menu = new QMenu(ui->classesTreeView);
+    //menu->clear();
+    menu->addAction(ui->seekToVTableAction);
+    menu->exec(ui->classesTreeView->mapToGlobal(pt));
+    delete menu;
+}
+
+void ClassesWidget::on_seekToVTableAction_triggered()
+{
+    RVA vtableOffset = ui->classesTreeView->selectionModel()->currentIndex()
+        .data(ClassesModel::VTableOffsetRole).value<RVA>();
+    if (vtableOffset != RVA_INVALID) {
+        Core()->seek(vtableOffset);
+    }
 }

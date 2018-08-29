@@ -109,6 +109,11 @@
     </item>
    </layout>
   </widget>
+  <action name="seekToVTableAction">
+   <property name="text">
+    <string>Seek to VTable</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
