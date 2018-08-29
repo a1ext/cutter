@@ -58,23 +58,26 @@ QVariant ClassesModel::data(const QModelIndex &index, int role) const
     const ClassDescription *cls;
     const ClassMethodDescription *meth = nullptr;
     const ClassFieldDescription *field = nullptr;
+    const ClassBaseClassDescription *base = nullptr;
     if (index.internalId() == 0) { // class row
         if (index.row() >= classes->count()) {
             return QVariant();
         }
 
         cls = &classes->at(index.row());
-    } else { // method/field row
+    } else { // method/field/base row
         cls = &classes->at(static_cast<int>(index.internalId() - 1));
 
         if (index.row() >= cls->methods.length() + cls->fields.length()) {
             return QVariant();
         }
 
-        if (index.row() < cls->methods.length()) {
-            meth = &cls->methods[index.row()];
+        if (index.row() < cls->baseClasses.length()) {
+            base = &cls->baseClasses[index.row()];
+        } else if (index.row() - cls->baseClasses.length() < cls->methods.length()) {
+            meth = &cls->methods[index.row() - cls->baseClasses.length()];
         } else {
-            field = &cls->fields[index.row() - cls->methods.length()];
+            field = &cls->fields[index.row() - cls->baseClasses.length() - cls->methods.length()];
         }
     }
 
@@ -126,7 +129,28 @@ QVariant ClassesModel::data(const QModelIndex &index, int role) const
         default:
             return QVariant();
         }
-    } else {
+    } else if (base) {
+        switch (role) {
+        case Qt::DisplayRole:
+            switch (index.column()) {
+            case NAME:
+                return base->name;
+            case TYPE:
+                return tr("base class");
+            case OFFSET:
+                return QString("+%1").arg(base->offset);
+            default:
+                return QVariant();
+            }
+        case NameRole:
+            return base->name;
+        case TypeRole:
+            return QVariant::fromValue(BASE);
+        default:
+            return QVariant();
+        }
+    }
+    else {
         switch (role) {
         case Qt::DisplayRole:
             switch (index.column()) {

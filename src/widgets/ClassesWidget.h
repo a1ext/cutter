@@ -27,7 +27,7 @@ private:
 
 public:
     enum Columns { NAME = 0, TYPE, OFFSET, VTABLE, COUNT };
-    enum RowType { CLASS = 0, METHOD = 1, FIELD = 2 };
+    enum RowType { CLASS = 0, METHOD = 1, FIELD = 2, BASE = 3 };
 
     static const int OffsetRole = Qt::UserRole;
     static const int NameRole = Qt::UserRole + 1;
