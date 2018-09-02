@@ -33,6 +33,7 @@ public:
     static const int NameRole = Qt::UserRole + 1;
     static const int TypeRole = Qt::UserRole + 2;
     static const int VTableOffsetRole = Qt::UserRole + 3;
+    static const int DataRole = Qt::UserRole + 4;
 
     explicit ClassesModel(QList<ClassDescription> *classes, QObject *parent = nullptr);
 
@@ -79,11 +80,12 @@ private slots:
     void on_classesTreeView_doubleClicked(const QModelIndex &index);
 
     void on_seekToVTableAction_triggered();
+    void on_addMethodAction_triggered();
+    void on_editMethodAction_triggered();
 
     void showContextMenu(const QPoint &pt);
 
     void refreshClasses();
-    void flagsChanged();
 
 private:
     enum class Source { BIN, FLAGS, ANAL };

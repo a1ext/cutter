@@ -192,7 +192,8 @@ SOURCES += \
     dialogs/BreakpointsDialog.cpp \
     dialogs/AttachProcDialog.cpp \
     widgets/RegisterRefsWidget.cpp \
-    dialogs/SetToDataDialog.cpp
+    dialogs/SetToDataDialog.cpp \
+    dialogs/EditMethodDialog.cpp
 
 HEADERS  += \
     Cutter.h \
@@ -288,7 +289,8 @@ HEADERS  += \
     widgets/RegisterRefsWidget.h \
     dialogs/SetToDataDialog.h \
     utils/InitialOptions.h \
-    utils/Json.h
+    utils/Json.h \
+    dialogs/EditMethodDialog.h
 
 FORMS    += \
     dialogs/AboutDialog.ui \
@@ -342,7 +344,8 @@ FORMS    += \
     dialogs/BreakpointsDialog.ui \
     dialogs/AttachProcDialog.ui \
     widgets/RegisterRefsWidget.ui \
-    dialogs/SetToDataDialog.ui
+    dialogs/SetToDataDialog.ui \
+    dialogs/EditMethodDialog.ui
 
 RESOURCES += \
     resources.qrc \

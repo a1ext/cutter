@@ -469,6 +469,18 @@ void CutterCore::setCurrentBits(int bits, RVA offset)
     emit instructionChanged(offset);
 }
 
+void CutterCore::setClassMethod(const QString &className, const ClassMethodDescription &meth)
+{
+    cmd(QString("\"aCm %1 %2 %3 %4\"").arg(className).arg(meth.name).arg(meth.addr).arg(meth.vtableIndex));
+    emit classesChanged();
+}
+
+void CutterCore::renameClassMethod(const QString &className, const QString &oldMethodName, const QString &newMethodName)
+{
+    cmd(QString("\"aCmn %1 %2 %3\"").arg(className, oldMethodName, newMethodName));
+    emit classesChanged();
+}
+
 void CutterCore::seek(ut64 offset)
 {
     // Slower than using the API, but the API is not complete
@@ -548,6 +560,12 @@ ut64 CutterCore::math(const QString &expr)
 {
     CORE_LOCK();
     return r_num_math(this->core_ ? this->core_->num : NULL, expr.toUtf8().constData());
+}
+
+ut64 CutterCore::num(const QString &expr)
+{
+    CORE_LOCK();
+    return r_num_get(this->core_ ? this->core_->num : NULL, expr.toUtf8().constData());
 }
 
 QString CutterCore::itoa(ut64 num, int rdx)

@@ -114,6 +114,16 @@
     <string>Seek to VTable</string>
    </property>
   </action>
+  <action name="editMethodAction">
+   <property name="text">
+    <string>Edit Method</string>
+   </property>
+  </action>
+  <action name="addMethodAction">
+   <property name="text">
+    <string>Add Method</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

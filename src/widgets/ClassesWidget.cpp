@@ -5,6 +5,7 @@
 #include "MainWindow.h"
 #include "ui_ClassesWidget.h"
 #include "utils/Helpers.h"
+#include "dialogs/EditMethodDialog.h"
 
 #include <QMenu>
 
@@ -104,6 +105,8 @@ QVariant ClassesModel::data(const QModelIndex &index, int role) const
             return meth->name;
         case TypeRole:
             return QVariant::fromValue(METHOD);
+        case DataRole:
+            return QVariant::fromValue(*meth);
         default:
             return QVariant();
         }
@@ -267,7 +270,16 @@ ClassesWidget::ClassesWidget(MainWindow *main, QAction *action) :
     ui->classesTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(Core(), SIGNAL(refreshAll()), this, SLOT(refreshClasses()));
-    connect(Core(), SIGNAL(flagsChanged()), this, SLOT(flagsChanged()));
+    connect(Core(), &CutterCore::flagsChanged, this, [this]() {
+        if (getSource() == Source::FLAGS) {
+            refreshClasses();
+        }
+    });
+    connect(Core(), &CutterCore::classesChanged, this, [this]() {
+        if (getSource() == Source::ANAL) {
+            refreshClasses();
+        }
+    });
     connect(ui->classSourceCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(refreshClasses()));
     connect(ui->classesTreeView, &QTreeView::customContextMenuRequested, this, &ClassesWidget::showContextMenu);
 }
@@ -283,13 +295,6 @@ ClassesWidget::Source ClassesWidget::getSource()
         return Source::FLAGS;
     default:
         return Source::ANAL;
-    }
-}
-
-void ClassesWidget::flagsChanged()
-{
-    if (getSource() == Source::FLAGS) {
-        refreshClasses();
     }
 }
 
@@ -325,11 +330,25 @@ void ClassesWidget::on_classesTreeView_doubleClicked(const QModelIndex &index)
 
 void ClassesWidget::showContextMenu(const QPoint &pt)
 {
-    QMenu *menu = new QMenu(ui->classesTreeView);
-    //menu->clear();
-    menu->addAction(ui->seekToVTableAction);
-    menu->exec(ui->classesTreeView->mapToGlobal(pt));
-    delete menu;
+    QModelIndex index = ui->classesTreeView->selectionModel()->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+
+    QMenu menu(ui->classesTreeView);
+
+    QVariant vtableOffsetVariant = index.data(ClassesModel::VTableOffsetRole);
+    if (vtableOffsetVariant.isValid() && vtableOffsetVariant.toULongLong() != RVA_INVALID) {
+        menu.addAction(ui->seekToVTableAction);
+    }
+
+    menu.addAction(ui->addMethodAction);
+
+    if (index.data(ClassesModel::TypeRole) == ClassesModel::METHOD) {
+        menu.addAction(ui->editMethodAction);
+    }
+
+    menu.exec(ui->classesTreeView->mapToGlobal(pt));
 }
 
 void ClassesWidget::on_seekToVTableAction_triggered()
@@ -339,4 +358,36 @@ void ClassesWidget::on_seekToVTableAction_triggered()
     if (vtableOffset != RVA_INVALID) {
         Core()->seek(vtableOffset);
     }
+}
+
+void ClassesWidget::on_addMethodAction_triggered()
+{
+    QModelIndex index = ui->classesTreeView->selectionModel()->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+
+    QString className;
+    if (index.data(ClassesModel::TypeRole).toInt() == ClassesModel::CLASS) {
+        className = index.data(ClassesModel::NameRole).toString();
+    } else {
+        className = index.parent().data(ClassesModel::NameRole).toString();
+    }
+
+    ClassMethodDescription meth;
+    meth.addr = Core()->getOffset();
+
+    EditMethodDialog::newMethod(className, meth);
+}
+
+void ClassesWidget::on_editMethodAction_triggered()
+{
+    QModelIndex index = ui->classesTreeView->selectionModel()->currentIndex();
+    if (!index.isValid() || index.data(ClassesModel::TypeRole).toInt() != ClassesModel::METHOD) {
+        return;
+    }
+
+    QString className = index.parent().data(ClassesModel::NameRole).toString();
+    ClassMethodDescription meth = index.data(ClassesModel::DataRole).value<ClassMethodDescription>();
+    EditMethodDialog::editMethod(className, meth);
 }
