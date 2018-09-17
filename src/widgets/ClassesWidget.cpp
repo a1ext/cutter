@@ -43,7 +43,7 @@ int ClassesModel::rowCount(const QModelIndex &parent) const
 
     if (parent.internalId() == 0) { // methods/fields
         const ClassDescription *cls = &classes->at(parent.row());
-        return cls->methods.length() + cls->fields.length();
+        return cls->baseClasses.length() + cls->methods.length() + cls->fields.length();
     }
 
     return 0; // below methods/fields
@@ -69,7 +69,7 @@ QVariant ClassesModel::data(const QModelIndex &index, int role) const
     } else { // method/field/base row
         cls = &classes->at(static_cast<int>(index.internalId() - 1));
 
-        if (index.row() >= cls->methods.length() + cls->fields.length()) {
+        if (index.row() >= cls->baseClasses.length() + cls->methods.length() + cls->fields.length()) {
             return QVariant();
         }
 
