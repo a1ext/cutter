@@ -75,7 +75,7 @@ after_success:
       export DMG_FILE="Cutter-v$CUTTER_VERSION-x64.macOS.dmg" &&
       hdiutil create -srcfolder image -volname Cutter -fs HFS+ "$DMG_FILE" &&
       export FILE_TO_UPLOAD="$DMG_FILE" &&
-      ls -la Cutter.app/Contents/MacOS/Cutter
+      export TRAVIS_TAG=$GIT_TAG
     ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       make INSTALL_ROOT=appdir install &&
