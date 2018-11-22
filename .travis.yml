@@ -8,17 +8,12 @@ branches:
   - debug
   - /^v\d.*$/
   - deploy-test
+  - mac_travis_fix
 
 matrix:
   include:
-  - os: linux
-    env: BUILD_SYSTEM=qmake DEPLOY=1
-  - os: linux
-    env: BUILD_SYSTEM=cmake
   - os: osx
     env: BUILD_SYSTEM=qmake DEPLOY=1
-  - os: osx
-    env: BUILD_SYSTEM=cmake
 
 sudo: required
 dist: trusty
@@ -102,12 +97,11 @@ deploy:
   skip_cleanup: true
   provider: releases
   draft: true
-  tag_name: $TRAVIS_TAG
+  tag_name: "$TRAVIS_TAG"
   api_key:
-    secure: ZXuSX8JXyL0HlJvSIda3ftMkvYsrxoWDcWm2LxO+f0uNFghCHNnISuH/btdipn2mjCBaBQl6/1IK5cg/AZ5OSkiaVsJJqY8kkPsZvR8K+k4oarsr2ApetlLZiZWtydC3J+UyNhsgCt4iuYPsvusANFPZBpVmqT+A5CHS7aPIqP00awbkJYG1uOENe2XVZ0vyotBqU0E7A9f8UO5ps0+qysS8W+NDB+CGLgKLeBfCk3U+IYKGYXcv66xCmSSZ5f7IVIXEjG4voFHGp9XLRY2R/iJgiKQKDbu519vUB3iKPzmLTB/Q9bNz4VMZCREa4SHaLDen730fMHbfm6ZhGZDzXg1DgZoh6RHptWf0WjcHTr1ch8ajpnBMxh/qmoRpaS00FJQMraMT3Il38ekYd+hOhsP58Bj1Db2vjBKopGEHGmVyFQZKuynrdKmpmY+kRNUT3QerIsiAHwHV2QXnMARHYXJrM0T7LNACa2mhiwQD2vNIqLRieIbHbSWgDUrTVTDeII23AAHCzD0YxcCAjSExjun/rc9dJjevgCoBpTM/NHPLCW4big1myx+vRQGPNdlf+dI7igm6bPVWB7znp5uXlI8q5irvqTVtRSvKbcaeDWOz/ki7QgOzaxmGFtaw30hxeY0wFlnSMXc8m42udWLkp/l0b4L0hcoaMTc1TvVU0i4=
+    secure: HdUIojN7zN6ksmQxYex7gSYX4q0vI/f7r06H5Ct4XABqW3rsmag2WHHCx4bk0v+kI6+eh0/JTfHsC6/FGlgerITUcZ0cezn0paicgrpxqDiPmOd7/AfZqIq8BUBIifWJs1lF84+4ORB6H77v6+BuWSgCrLumpGPKn6Ry9cGYbY4Me4g8mnIQhE328VYPUpcABTVC3BrszXBeNsPgHE6mXbf1iGIwxAQVgsXMWehPb5W7ET0Qa/XJWCLvhQoNRcbBW90yogDZiu3s1vkr1iG2K5fy1gOCJDHSbU8RZ0cnmLQPzFMFqeF6RYZ3LJzS1NwOvZomIfIh23jyfCzWL2t8UZjMpJEKpnQDj+v/3UdINDHKGV0oOZSWnNenLzez+Qy9+cEdL0I41SVIjDGrFEab+UHG/sihs/lQbMmN0ohtplqf+ZP24YyJRwtXSaR5l2wu+6H/u7AkI/CWSCxCCJx7fxkeSd9hI+SjOqNpBPgu29PJXI1O0IiVFq3Z4b6FlhLI7eDFx3fu3ZZ4BPs3pPX8lMCpXU3SqZ5ITFhOs3jy3f7zb7ieCq6caq56KNamnbC1CwfH4dCyo+Zp54uW19UXwuOweLDqdbOjZA5IymYzIPRWzvV060EppN6UP6j4D33Uj8jgVL6ctdePysH6EpUVbIJROnnQil9aggvDmoUl3Gk=
   file:
     - "${FILE_TO_UPLOAD}"
   on:
-    tags: true
-    condition: $DEPLOY = 1
-
+    tags: false
+    condition: "$DEPLOY = 1"
