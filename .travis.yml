@@ -86,17 +86,16 @@ after_success:
 
 before_deploy:
 - if [[ "$TRAVIS_TAG" == "" ]]; then  export TRAVIS_TAG=git-$GIT_TAG  ; fi
-    
 deploy:
   skip_cleanup: true
   provider: releases
   draft: true
   tag_name: "$TRAVIS_TAG"
-  auth_token:
-    secure: HdUIojN7zN6ksmQxYex7gSYX4q0vI/f7r06H5Ct4XABqW3rsmag2WHHCx4bk0v+kI6+eh0/JTfHsC6/FGlgerITUcZ0cezn0paicgrpxqDiPmOd7/AfZqIq8BUBIifWJs1lF84+4ORB6H77v6+BuWSgCrLumpGPKn6Ry9cGYbY4Me4g8mnIQhE328VYPUpcABTVC3BrszXBeNsPgHE6mXbf1iGIwxAQVgsXMWehPb5W7ET0Qa/XJWCLvhQoNRcbBW90yogDZiu3s1vkr1iG2K5fy1gOCJDHSbU8RZ0cnmLQPzFMFqeF6RYZ3LJzS1NwOvZomIfIh23jyfCzWL2t8UZjMpJEKpnQDj+v/3UdINDHKGV0oOZSWnNenLzez+Qy9+cEdL0I41SVIjDGrFEab+UHG/sihs/lQbMmN0ohtplqf+ZP24YyJRwtXSaR5l2wu+6H/u7AkI/CWSCxCCJx7fxkeSd9hI+SjOqNpBPgu29PJXI1O0IiVFq3Z4b6FlhLI7eDFx3fu3ZZ4BPs3pPX8lMCpXU3SqZ5ITFhOs3jy3f7zb7ieCq6caq56KNamnbC1CwfH4dCyo+Zp54uW19UXwuOweLDqdbOjZA5IymYzIPRWzvV060EppN6UP6j4D33Uj8jgVL6ctdePysH6EpUVbIJROnnQil9aggvDmoUl3Gk=
-  file:
-    - "${FILE_TO_UPLOAD}"
+  api_key:
+    secure: Afa47IrnkyUPvyrdlM8slonn36IBPGeI/pqaiY+x1iSBRs7aOsW/ZqeCmPUyyVvNiDPG8RzBhbYn1nGnlEOJIFwPumzEIV+vKjJT2xBm6uC71740z5xplOdntUn08oY8s2AATsBy10CmV9XJ8ZhnDY4GHdbVbNhj3PUfgtYagQKu2GJfviJFKkLsrxctrtAJ2qwNfjzI8NcdQdqLS64j0f3mFYXk/K7OvVl8vGkl/bWRUSggIAKbWt16lG8NMuXp2NM4hJkVNZCJ55lwptbBXc9ZyLQn1In56Aq1qU7vOiYvEubQId/EHQcyfwtRJ3acK1cR48l6DxtCacTkl7nZaDQc/wIKQ1ceJeux+znXqg7fWJ2W12eHhas5uZLmIFuXhO4uDj5kvQjOgM+PnrsT/d1l5qAY+0kRHIcbEfyiNK4ET1GBC0DTlrdFOFfkn/hQfaTGAdLK/P4pFX55xfj48AHHlBeOP1eflRJmf+yRB/msbkYA8zePfLsMe+A+0OBgcf3LuNi2EqZHPpxeKKft9vOdFc8L7VBWtjnSMuBa1lWbZg30bLGPJDtZQYSrInzUSLyHIsbGCHnHuD9fYZiuDJAerCedkKGsYyjkRlorfemIuLzG14Dd/un5LxSdV5EMko4v9gBxvPnxhYaCsP6nqIxw99TuaOiW+UpVP0Z7uBs=
+  file: "${FILE_TO_UPLOAD}"
   on:
     tags: true
     condition: "$DEPLOY = 1"
+    repo: a1ext/cutter
     all_branches: true
