@@ -92,7 +92,7 @@ deploy:
   provider: releases
   draft: true
   tag_name: "$TRAVIS_TAG"
-  api_key:
+  auth_token:
     secure: HdUIojN7zN6ksmQxYex7gSYX4q0vI/f7r06H5Ct4XABqW3rsmag2WHHCx4bk0v+kI6+eh0/JTfHsC6/FGlgerITUcZ0cezn0paicgrpxqDiPmOd7/AfZqIq8BUBIifWJs1lF84+4ORB6H77v6+BuWSgCrLumpGPKn6Ry9cGYbY4Me4g8mnIQhE328VYPUpcABTVC3BrszXBeNsPgHE6mXbf1iGIwxAQVgsXMWehPb5W7ET0Qa/XJWCLvhQoNRcbBW90yogDZiu3s1vkr1iG2K5fy1gOCJDHSbU8RZ0cnmLQPzFMFqeF6RYZ3LJzS1NwOvZomIfIh23jyfCzWL2t8UZjMpJEKpnQDj+v/3UdINDHKGV0oOZSWnNenLzez+Qy9+cEdL0I41SVIjDGrFEab+UHG/sihs/lQbMmN0ohtplqf+ZP24YyJRwtXSaR5l2wu+6H/u7AkI/CWSCxCCJx7fxkeSd9hI+SjOqNpBPgu29PJXI1O0IiVFq3Z4b6FlhLI7eDFx3fu3ZZ4BPs3pPX8lMCpXU3SqZ5ITFhOs3jy3f7zb7ieCq6caq56KNamnbC1CwfH4dCyo+Zp54uW19UXwuOweLDqdbOjZA5IymYzIPRWzvV060EppN6UP6j4D33Uj8jgVL6ctdePysH6EpUVbIJROnnQil9aggvDmoUl3Gk=
   file:
     - "${FILE_TO_UPLOAD}"
