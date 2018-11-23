@@ -2,13 +2,6 @@ language: cpp
 
 cache: ccache
 
-branches:
-  only:
-  - master
-  - debug
-  - /^v\d.*$/
-  - deploy-test
-  - mac_travis_fix
 
 matrix:
   include:
@@ -74,8 +67,7 @@ after_success:
       mkdir image && cp -a Cutter.app image/ &&
       export DMG_FILE="Cutter-v$CUTTER_VERSION-x64.macOS.dmg" &&
       hdiutil create -srcfolder image -volname Cutter -fs HFS+ "$DMG_FILE" &&
-      export FILE_TO_UPLOAD="$DMG_FILE" &&
-      export TRAVIS_TAG=$GIT_TAG
+      export FILE_TO_UPLOAD="$DMG_FILE"
     ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       make INSTALL_ROOT=appdir install &&
@@ -92,6 +84,9 @@ after_success:
       export FILE_TO_UPLOAD="$APPIMAGE_FILE"
     ; fi
 
+before_deploy:
+- if [[ "$TRAVIS_TAG" == "" ]]; then  export TRAVIS_TAG=git-$GIT_TAG  ; fi
+    
 deploy:
   skip_cleanup: true
   provider: releases
@@ -102,6 +97,6 @@ deploy:
   file:
     - "${FILE_TO_UPLOAD}"
   on:
-    tags: false
+    tags: true
     condition: "$DEPLOY = 1"
-    branch: mac_travis_fix
+    all_branches: true
