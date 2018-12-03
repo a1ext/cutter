@@ -67,7 +67,7 @@ Configuration *Configuration::instance()
 void Configuration::loadInitial()
 {
     setTheme(getTheme());
-    setColorTheme(getCurrentTheme());
+    setColorTheme(getColorTheme());
     applySavedAsmOptions();
 }
 
@@ -234,7 +234,7 @@ void Configuration::setFont(const QFont &font)
 QString Configuration::getLastThemeOf(const CutterQtTheme &currQtTheme) const
 {
     return s.value("lastThemeOf." + currQtTheme.name,
-                   Config()->getCurrentTheme()).toString();
+                   Config()->getColorTheme()).toString();
 }
 
 void Configuration::setTheme(int theme)
@@ -287,21 +287,21 @@ const QColor Configuration::getColor(const QString &name) const
     }
 }
 
-void Configuration::setColorTheme(QString theme)
+void Configuration::setColorTheme(const QString &theme)
 {
     if (theme == "default") {
         Core()->cmd("ecd");
         s.setValue("theme", "default");
     } else {
-        Core()->cmd(QString("eco %1").arg(theme));
+        Core()->cmd(QStringLiteral("eco %1").arg(theme));
         s.setValue("theme", theme);
     }
     // Duplicate interesting colors into our Cutter Settings
     // Dirty fix for arrow colors, TODO refactor getColor, setColor, etc.
     QJsonDocument colors = Core()->cmdj("ecj");
     QJsonObject colorsObject = colors.object();
-    QJsonObject::iterator it;
-    for (it = colorsObject.begin(); it != colorsObject.end(); it++) {
+
+    for (auto it = colorsObject.constBegin(); it != colorsObject.constEnd(); it++) {
         QJsonArray rgb = it.value().toArray();
         if (rgb.size() != 3) {
             continue;
@@ -322,14 +322,14 @@ void Configuration::setColorTheme(QString theme)
 
 void Configuration::resetToDefaultAsmOptions()
 {
-    for (auto it = asmOptions.begin(); it != asmOptions.end(); it++) {
+    for (auto it = asmOptions.cbegin(); it != asmOptions.cend(); it++) {
         setConfig(it.key(), it.value());
     }
 }
 
 void Configuration::applySavedAsmOptions()
 {
-    for (auto it = asmOptions.begin(); it != asmOptions.end(); it++) {
+    for (auto it = asmOptions.cbegin(); it != asmOptions.cend(); it++) {
         Core()->setConfig(it.key(), s.value(it.key(), it.value()));
     }
 }

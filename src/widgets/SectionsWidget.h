@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 
+#include <QtWidgets/QToolButton>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
 #include <QGraphicsScene>
@@ -77,21 +78,30 @@ private:
     QWidget *dockWidgetContents;
     QuickFilterView *quickFilterView;
 
+    QWidget *addrDockWidget;
     SectionAddrDock *rawAddrDock;
     SectionAddrDock *virtualAddrDock;
+    QToolButton *toggleButton;
 
     int indicatorWidth;
     int indicatorHeight;
     int indicatorParamPosY;
     void drawIndicatorOnAddrDocks();
     void updateIndicator(SectionAddrDock *targetDock, QString name, float ratio);
+    void updateToggle();
 };
 
 class SectionAddrDock : public QDockWidget
 {
     Q_OBJECT
 
-public:
+    friend SectionsWidget;
+
+private slots:
+    void updateDock();
+    void addTextItem(QColor color, QPoint pos, QString string);
+
+private:
     enum AddrType { Raw = 0, Virtual };
     int heightThreshold;
     int rectOffset;
@@ -99,17 +109,11 @@ public:
     QColor indicatorColor;
     explicit SectionAddrDock(SectionsModel *model, AddrType type, QWidget *parent = nullptr);
     QGraphicsScene *graphicsScene;
+    QGraphicsView *graphicsView;
     SectionsProxyModel *proxyModel;
     AddrType addrType;
     QHash<QString, int> namePosYMap;
     QHash<QString, int> nameHeightMap;
-
-public slots:
-    void updateDock();
-    void addTextItem(QColor color, QPoint pos, QString string);
-
-private:
-    QGraphicsView *graphicsView;
 };
 
 #endif // SECTIONSWIDGET_H
