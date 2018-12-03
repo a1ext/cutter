@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! [[ $# -eq 2 ]]; then
+if ! [[ $# -eq 3 ]]; then
     echo "Usage: $0 [App name] [background.png] [Volume name]"
     exit 1
 fi
