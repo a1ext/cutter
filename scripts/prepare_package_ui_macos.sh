@@ -14,13 +14,17 @@ if [[ ! -f ${DMG_BACKGROUND_IMG} ]]; then
     exit 1
 fi
 
-pushd "/Volumes/${VOL_NAME}" || exit 1
+echo "Adding link to '/Applications'..."
+pushd /Volumes/"${VOL_NAME}" || exit 1
 ln -s /Applications " " || exit 1
 popd || exit 1
 
-mkdir /Volumes/${VOL_NAME}/.background || exit 1
+echo "Package background set up..."
+mkdir /Volumes/"${VOL_NAME}"/.background || exit 1
 
-cp "${DMG_BACKGROUND_IMG}" /Volumes/${VOL_NAME}/.background/ || exit 1
+cp "${DMG_BACKGROUND_IMG}" /Volumes/"${VOL_NAME}"/.background/ || exit 1
+
+DMG_BACKGROUND_IMG_BASENAME=$(basename "${DMG_BACKGROUND_IMG}")
 
 # tell the Finder to resize the window, set the background,
 #  change the icon size, place the icons in the right position, etc.
@@ -35,7 +39,7 @@ echo '
            set viewOptions to the icon view options of container window
            set arrangement of viewOptions to not arranged
            set icon size of viewOptions to 122
-           set background picture of viewOptions to file ".background:'${DMG_BACKGROUND_IMG}'"
+           set background picture of viewOptions to file ".background:'${DMG_BACKGROUND_IMG_BASENAME}'"
            set position of item "'${APP_NAME}'.app" of container window to {117, 193}
            set position of item " " of container window to {411, 193}
            set position of item ".background" of container window to {1000, 1000}
@@ -48,4 +52,5 @@ echo '
    end tell
 ' | osascript || exit 1
 
+echo "Syncing..."
 sync || exit 1

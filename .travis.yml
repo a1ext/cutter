@@ -73,7 +73,7 @@ after_success:
       hdiutil create -srcfolder image -volname "${VOL_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size ${SIZE}M "$DMG_TMP_FILE" &&
       export DEVICE=$(hdiutil attach -readwrite -noverify "${DMG_TMP_FILE}" | egrep '^/dev/' | sed 1q | awk '{print $1}') &&
       sleep 2 &&
-      ../scripts/prepare_package_ui_macos.sh "Cutter" "../src/macos/cutter_mac_app.png" "${VOL_NAME}" &&
+      ../scripts/prepare_package_ui_macos.sh "Cutter" "${PWD}/../src/macos/cutter_mac_app.png" "${VOL_NAME}" &&
       hdiutil detach "${DEVICE}" &&
       hdiutil convert "${DMG_TMP_FILE}" -format UDZO -imagekey zlib-level=9 -o "${DMG_FILE}" &&
       export FILE_TO_UPLOAD="$DMG_FILE"
