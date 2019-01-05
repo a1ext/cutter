@@ -24,6 +24,19 @@ void CutterDockWidget::toggleDockWidget(bool show)
     }
 }
 
+void CutterDockWidget::setDockUniqueObjectName()
+{
+    static const QString kNamePattern = QStringLiteral("%1#%2");
+    const QString &name = metaObject()->className();
+    quint64 num = 0;
+    QString newName;
+    while (parent()->findChild<CutterDockWidget*>(newName = kNamePattern.arg(name).arg(num))) {
+        ++num;
+    }
+
+    setObjectName(newName);
+}
+
 void CutterDockWidget::closeEvent(QCloseEvent *event)
 {
     if (action) {

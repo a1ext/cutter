@@ -6,7 +6,8 @@
 GraphWidget::GraphWidget(MainWindow *main, QAction *action) :
     CutterDockWidget(main, action)
 {
-    this->setObjectName("Graph");
+    setDockUniqueObjectName();
+
     this->setAllowedAreas(Qt::AllDockWidgetAreas);
     this->graphView = new DisassemblerGraphView(this);
     this->setWidget(graphView);

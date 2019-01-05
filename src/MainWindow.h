@@ -248,6 +248,7 @@ private:
     void toggleDockWidget(QDockWidget *dock_widget, bool show);
 
     void updateDockActionsChecked();
+    void createMissingExtraWidgets();
 
 public:
     QString getFilename() const
