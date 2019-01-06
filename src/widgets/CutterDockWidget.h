@@ -15,6 +15,7 @@ public:
     ~CutterDockWidget();
 public slots:
     void toggleDockWidget(bool show);
+    void setDockUniqueObjectName();
 
 
 private:

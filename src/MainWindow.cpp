@@ -468,6 +468,14 @@ void MainWindow::saveSettings()
     settings.setValue("state", saveState());
     settings.setValue("panelLock", panelLock);
     settings.setValue("tabsOnTop", tabsOnTop);
+    // get all the open dock widgets and store their object names, 
+    // this will allow us to create them on next start
+    auto docks = findChildren<CutterDockWidget*>();
+    QStringList dockNames;
+    for (const auto v : docks) {
+        dockNames << v->objectName();
+    }
+    settings.setValue("openDocks", dockNames);
 }
 
 void MainWindow::readDebugSettings()
@@ -589,6 +597,7 @@ void MainWindow::restoreDocks()
 #endif
 
     updateDockActionsChecked();
+    createMissingExtraWidgets();
 }
 
 
@@ -605,6 +614,53 @@ void MainWindow::updateDockActionsChecked()
 {
     for (auto i = dockWidgetActions.constBegin(); i != dockWidgetActions.constEnd(); i++) {
         i.key()->setChecked(!i.value()->isHidden());
+    }
+}
+
+void MainWindow::createMissingExtraWidgets()
+{
+    QStringList openDocks;
+    {
+        QSettings settings;
+        openDocks = settings.value("openDocks", QStringList()).toStringList();
+    }
+
+    // exit if there is no saved open Docks
+    if (openDocks.isEmpty())
+        return;
+
+    static const QString kHexdumpWidgetName = QStringLiteral("HexdumpWidget");
+    static const QString kGraphWidgetName = QStringLiteral("GraphWidget");
+    static const QString kDisassemblyWidgetName = QStringLiteral("DisassemblyWidget");
+
+    // create missing widgets based on their object names
+    for (const auto &objName : openDocks) {
+        const QStringList &nameChunks = objName.split('#', QString::SkipEmptyParts);
+        if (nameChunks.length() != 2)
+            continue;
+
+        // skip if widget with such object name exists
+        if (findChild<CutterDockWidget*>(objName))
+            continue;
+
+        // Add below new Widgets which can be added to the MainWindow multiple times
+        CutterDockWidget* extraDock = nullptr;
+        if (nameChunks[0] == kHexdumpWidgetName) {
+            extraDock = new HexdumpWidget(this, nullptr);
+        }
+        else if (nameChunks[0] == kGraphWidgetName) {
+            extraDock = new GraphWidget(this, nullptr);
+        }
+        else if (nameChunks[0] == kDisassemblyWidgetName) {
+            extraDock = new DisassemblyWidget(this, nullptr);
+        }
+        else {
+            qWarning() << "Unsupported extra widget got: " << nameChunks[0];
+            continue;
+        }
+
+        extraDock->setObjectName(objName);
+        addExtraWidget(extraDock);
     }
 }
 

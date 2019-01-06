@@ -47,6 +47,7 @@ DisassemblyWidget::DisassemblyWidget(MainWindow *main, QAction *action)
     cursorLineOffset = 0;
     seekFromCursor = false;
 
+    setDockUniqueObjectName();
     setWindowTitle(tr("Disassembly"));
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -58,7 +59,6 @@ DisassemblyWidget::DisassemblyWidget(MainWindow *main, QAction *action)
     setWidget(mDisasScrollArea);
 
     setAllowedAreas(Qt::AllDockWidgetAreas);
-    setObjectName("DisassemblyWidget");
 
     setupFonts();
     setupColors();

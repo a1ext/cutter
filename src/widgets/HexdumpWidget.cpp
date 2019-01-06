@@ -20,6 +20,7 @@ HexdumpWidget::HexdumpWidget(MainWindow *main, QAction *action) :
     seekable(new CutterSeekableWidget(this))
 {
     ui->setupUi(this);
+    setDockUniqueObjectName();
 
     // Setup hex highlight
     //connect(ui->hexHexText, SIGNAL(cursorPositionChanged()), this, SLOT(highlightHexCurrentLine()));
