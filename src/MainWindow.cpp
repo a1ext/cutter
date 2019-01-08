@@ -88,6 +88,12 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
+namespace {
+
+constexpr int kMainWindowStateVer = 1;
+
+} // anonymous
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     core(Core()),
@@ -446,7 +452,7 @@ void MainWindow::readSettings()
     QByteArray geo = settings.value("geometry", QByteArray()).toByteArray();
     restoreGeometry(geo);
     QByteArray state = settings.value("state", QByteArray()).toByteArray();
-    restoreState(state);
+    restoreState(state, kMainWindowStateVer);
     this->responsive = settings.value("responsive").toBool();
     panelLock = settings.value("panelLock").toBool();
     setPanelLock();
@@ -465,7 +471,7 @@ void MainWindow::saveSettings()
     settings.setValue("geometry", saveGeometry());
     settings.setValue("size", size());
     settings.setValue("pos", pos());
-    settings.setValue("state", saveState());
+    settings.setValue("state", saveState(kMainWindowStateVer));
     settings.setValue("panelLock", panelLock);
     settings.setValue("tabsOnTop", tabsOnTop);
     // get all the open dock widgets and store their object names, 
@@ -484,7 +490,7 @@ void MainWindow::readDebugSettings()
     QByteArray geo = settings.value("debug.geometry", QByteArray()).toByteArray();
     restoreGeometry(geo);
     QByteArray state = settings.value("debug.state", QByteArray()).toByteArray();
-    restoreState(state);
+    restoreState(state, kMainWindowStateVer);
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
     resize(size);
@@ -496,7 +502,7 @@ void MainWindow::saveDebugSettings()
 {
     QSettings settings;
     settings.setValue("debug.geometry", saveGeometry());
-    settings.setValue("debug.state", saveState());
+    settings.setValue("debug.state", saveState(kMainWindowStateVer));
     settings.setValue("size", size());
     settings.setValue("pos", pos());
 }
