@@ -2,12 +2,6 @@ language: cpp
 
 cache: ccache
 
-branches:
-  only:
-  - master
-  - debug
-  - /^v\d.*$/
-  - deploy-test
 
 matrix:
   include:
@@ -114,6 +108,9 @@ after_success:
       mv Cutter-*-x86_64.AppImage "$APPIMAGE_FILE" &&
       export FILE_TO_UPLOAD="$APPIMAGE_FILE"
     ; fi
+    
+before_deploy:
+- if [[ "$TRAVIS_TAG" == "" ]]; then  export TRAVIS_TAG=git-$GIT_TAG  ; fi
 
 deploy:
   skip_cleanup: true
